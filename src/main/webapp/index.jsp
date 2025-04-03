@@ -23,8 +23,8 @@
             <div class="dashboard">
                 <h2>Quick Actions</h2>
                 <ul>
-                    <li><a href="trip/request.jsp">Request a Trip</a></li>
-                    <li><a href="trip/list.jsp">View Trips</a></li>
+                    <li><a href="book">Request a Trip</a></li>
+                    <li><a href="list">View Trips</a></li>
                     <c:if test="${sessionScope.user.role == 'admin'}">
                         <li><a href="department/manage.jsp">Manage Departments</a></li>
                     </c:if>

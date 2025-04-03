@@ -34,17 +34,21 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
+       
         try {
             Optional<User> user = userDAO.authenticateUser(email, password);
             
             if (user.isPresent()) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user.get());
-                response.sendRedirect(request.getContextPath() + "/dashboard");
+
+                // Redirect to home page 
+                response.sendRedirect(request.getContextPath() + "/home");
             } else {
                 request.setAttribute("errorMessage", "Invalid email or password");
                 request.getRequestDispatcher("/WEB-INF/views/users/login.jsp").forward(request, response);
             }
+        
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "An error occurred during login");
