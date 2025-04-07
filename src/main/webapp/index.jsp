@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>School Trips Booking System</title>
+    <title>Students Academic Trips Booking System</title>
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>

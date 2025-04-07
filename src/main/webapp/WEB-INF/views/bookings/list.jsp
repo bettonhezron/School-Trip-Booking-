@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Trip List - School Trips Booking System</title>
+<title>Trip List - Students Academic Trips Booking System</title>
 <link rel="stylesheet" href="css/main.css">
 <style>
   table {

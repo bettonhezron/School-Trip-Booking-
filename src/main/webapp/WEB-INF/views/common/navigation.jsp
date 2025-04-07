@@ -10,7 +10,7 @@
         </c:if>
         
         <c:if test="${not empty sessionScope.user}">
-            <li><a href="${pageContext.request.contextPath}/list.jsp">Trips</a></li>
+            <li><a href="${pageContext.request.contextPath}/list">Trips</a></li>
             <c:if test="${sessionScope.user.role == 'admin'}">
                 <li><a href="${pageContext.request.contextPath}/department/list.jsp">Departments</a></li>
             </c:if>

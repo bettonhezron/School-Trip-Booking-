@@ -40,7 +40,7 @@ public class Trip implements Serializable {
         this.specialRequest = specialRequest;
         this.totalStudent = totalStudent;
         this.status = "PENDING";
-        this.createdAt = LocalDateTime.now(); // Uses current date & time
+        this.createdAt = LocalDateTime.now(); 
     }
 
     // Getters and Setters
