@@ -36,6 +36,7 @@ public class LoginServlet extends HttpServlet {
                 User user = userOptional.get();
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
+                session.setAttribute("loggedUser", user);
                 
                 // Add success message to session
                 session.setAttribute("successMessage", "Welcome back, " + user.getFullName() + "! You've successfully logged in.");

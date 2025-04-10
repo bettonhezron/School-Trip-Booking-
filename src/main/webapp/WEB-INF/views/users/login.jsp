@@ -58,14 +58,14 @@
 
     <form action="${pageContext.request.contextPath}/login" method="post" id="loginForm" novalidate>
         <div class="form-group">
-            <label for="email"><i class="fas fa-envelope"></i> Email:</label>
+            <label for="email">Email:</label>
             <input type="email" id="email" name="email" placeholder="Enter your email address">
             <span class="error-text" id="emailError">Please enter a valid email address.</span>
         </div>
         
         
         <div class="form-group" style="position: relative;">
-    <label for="password"><i class="fas fa-lock"></i> Password:</label>
+    <label for="password">Password:</label>
     <div style="position: relative;">
         <input type="password" id="password" name="password" placeholder="Enter your password">
         <span id="togglePasswordText" style="
@@ -90,7 +90,7 @@
         </c:if>
 
         <div class="form-group">
-            <button type="submit"><i class="fas fa-sign-in-alt"></i> Login</button>
+            <button type="submit"> Login</button>
         </div>
     </form>
 
@@ -109,55 +109,54 @@
         const emailError = document.getElementById('emailError');
         const passwordError = document.getElementById('passwordError');
 
-        function validateField(field, error, type) {
-            const value = field.value.trim();
-            let valid = true;
-
-            if (type === 'email') {
-                valid = /^\S+@\S+\.\S+$/.test(value);
-            } else if (type === 'password') {
-                valid = value.length >= 8;
-            }
-
-            if (!valid) {
-                field.classList.add("input-error");
-                error.classList.add("error-visible");
-            } else {
-                field.classList.remove("input-error");
-                error.classList.remove("error-visible");
-            }
-
-            return valid;
+        // Function to show error
+        function showError(field, error) {
+            field.classList.add("input-error");
+            error.classList.add("error-visible");
         }
-        
-        
-        const toggleText = document.getElementById("togglePasswordText");
-        const passwordInput = document.getElementById("password");
 
+        // Function to hide error
+        function hideError(field, error) {
+            field.classList.remove("input-error");
+            error.classList.remove("error-visible");
+        }
+
+        // Live: Hide error when typing
+        email.addEventListener('input', () => hideError(email, emailError));
+        password.addEventListener('input', () => hideError(password, passwordError));
+
+        // Toggle password visibility
+        const toggleText = document.getElementById("togglePasswordText");
         toggleText.addEventListener("click", function () {
-            const isHidden = passwordInput.getAttribute("type") === "password";
-            passwordInput.setAttribute("type", isHidden ? "text" : "password");
+            const isHidden = password.type === "password";
+            password.type = isHidden ? "text" : "password";
             toggleText.textContent = isHidden ? "Hide" : "Show";
         });
 
-
-        // Validate on blur and on input (live validation)
-        email.addEventListener('blur', () => validateField(email, emailError, 'email'));
-        email.addEventListener('input', () => validateField(email, emailError, 'email'));
-
-        password.addEventListener('blur', () => validateField(password, passwordError, 'password'));
-        password.addEventListener('input', () => validateField(password, passwordError, 'password'));
-
+        // Validate on form submit
         form.addEventListener('submit', function (e) {
-            const isEmailValid = validateField(email, emailError, 'email');
-            const isPasswordValid = validateField(password, passwordError, 'password');
+            let isValid = true;
 
-            if (!isEmailValid || !isPasswordValid) {
+            const emailValue = email.value.trim();
+            const passwordValue = password.value.trim();
+
+            if (!/^\S+@\S+\.\S+$/.test(emailValue)) {
+                showError(email, emailError);
+                isValid = false;
+            }
+
+            if (passwordValue.length < 8) {
+                showError(password, passwordError);
+                isValid = false;
+            }
+
+            if (!isValid) {
                 e.preventDefault();
             }
         });
     });
 </script>
+
 
 </body>
 </html>

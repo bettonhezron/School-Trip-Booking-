@@ -6,6 +6,7 @@ public class User {
     private String email;
     private String role;
     private int departmentId;
+    private String departmentName;
 
     // Constructors
     public User() {}
@@ -32,4 +33,12 @@ public class User {
 
     public int getDepartmentId() { return departmentId; }
     public void setDepartmentId(int departmentId) { this.departmentId = departmentId; }
+    
+    public String getDepartmentName() {
+        return departmentName;
+    }
+    
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
 }

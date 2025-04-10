@@ -4,13 +4,14 @@ import java.sql.*;
 import java.util.Optional;
 
 import com.schooltrip.model.User;
+import com.schooltrip.util.DBConnection;
 import com.schooltrip.util.PasswordHashUtil;
 
 public class UserDAO {
     public boolean registerUser(User user, String password) throws Exception {
         String sql = "INSERT INTO users (full_name, email, password, role, department_id) VALUES (?, ?, ?, ?, ?)";
         
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             pstmt.setString(1, user.getFullName());
@@ -25,9 +26,11 @@ public class UserDAO {
     }
 
     public Optional<User> authenticateUser(String email, String password) throws Exception {
-        String sql = "SELECT * FROM users WHERE email = ?";
+        String sql = "SELECT u.*, d.department_name FROM users u " +
+                     "JOIN departments d ON u.department_id = d.department_id " +
+                     "WHERE u.email = ?";
         
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, email);
@@ -43,6 +46,7 @@ public class UserDAO {
                         user.setEmail(rs.getString("email"));
                         user.setRole(rs.getString("role"));
                         user.setDepartmentId(rs.getInt("department_id"));
+                        user.setDepartmentName(rs.getString("department_name"));
                         
                         return Optional.of(user);
                     }
@@ -51,7 +55,6 @@ public class UserDAO {
         }
         return Optional.empty();
     }
-
     public boolean emailExists(String email) throws Exception {
         String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
         

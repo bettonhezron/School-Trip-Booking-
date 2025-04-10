@@ -60,11 +60,13 @@
 
     <div class="dashboard">
         <form id="tripForm" action="book" method="post" novalidate>
-            <div class="form-group">
-                <label for="department">Department Name:</label>
-                <input type="text" id="department" name="department" value="${sessionScope.loggedUser.department}" readonly>
-                <span class="error-text"></span>
-            </div>
+          
+          <div class="form-group">
+    <label for="department">Department Name:</label>
+    <input type="text" id="department" name="department" value="${sessionScope.loggedUser.departmentName}" readonly>
+    <input type="hidden" name="departmentId" value="${sessionScope.loggedUser.departmentId}">
+    <span class="error-text"></span>
+    </div>
 
             <div class="form-group">
                 <label for="destination">Destination (Enter the destination of the trip):</label>

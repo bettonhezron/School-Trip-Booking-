@@ -1,31 +1,33 @@
 package com.schooltrip.model;
 
 
+
 public class Department {
- private int id;
- private String name;
+    private int departmentId;
+    private String departmentName;
 
- public Department() {}
+    // Constructor
+    public Department() {}
 
- public Department(int id, String name) {
-     this.id = id;
-     this.name = name;
- }
+    public Department(int departmentId, String departmentName) {
+        this.departmentId = departmentId;
+        this.departmentName = departmentName;
+    }
 
- public int getId() {
-     return id;
- }
+    // Getters and Setters
+    public int getDepartmentId() {
+        return departmentId;
+    }
 
- public void setId(int id) {
-     this.id = id;
- }
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
+    }
 
- public String getName() {
-     return name;
- }
+    public String getDepartmentName() {
+        return departmentName;
+    }
 
- public void setName(String name) {
-     this.name = name;
- }
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
 }
-

@@ -27,6 +27,24 @@
             box-shadow: 0 0 3px 2px #3498db;
             transition: box-shadow 0.2s;
         }
+        .error-message {
+            padding: 10px;
+            background-color: #ffecec;
+            border-left: 4px solid #e74c3c;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .fade-out {
+            animation: fadeOut 0.5s ease forwards;
+        }
     </style>
 </head>
 <body>
@@ -37,7 +55,7 @@
     <h2>Create an Account</h2>
 
     <c:if test="${not empty errorMessage}">
-        <div class="error-message">
+        <div class="error-message" id="serverErrorMessage">
             <p><i class="fas fa-exclamation-circle"></i> ${errorMessage}</p>
         </div>
     </c:if>
@@ -75,11 +93,11 @@
 
         <div class="form-group">
             <label for="departmentId">Department:</label>
-            <select id="departmentId" name="departmentId" required>
+            <select id="departmentId" name="departmentId" required disabled>
                 <option value="">-- Select your department --</option>
-                <option value="1">Computer Science</option>
-                <option value="2">Engineering</option>
-                <option value="3">Business</option>
+                <c:forEach items="${departments}" var="dept">
+                    <option value="${dept.departmentId}">${dept.departmentName}</option>
+                </c:forEach>
             </select>
             <span class="error-text" id="departmentError">Please select a department.</span>
         </div>
@@ -115,14 +133,43 @@
             department: document.getElementById('departmentError')
         };
 
+        // Auto-dismiss server error messages after 5 seconds
+        const serverErrorMessage = document.getElementById('serverErrorMessage');
+        if (serverErrorMessage) {
+            setTimeout(() => {
+                serverErrorMessage.classList.add('fade-out');
+                setTimeout(() => {
+                    serverErrorMessage.style.display = 'none';
+                }, 500);
+            }, 5000);
+        }
+
+        // Helper: show error
+        function showError(field, error) {
+            field.classList.add("input-error");
+            error.classList.add("error-visible");
+            
+            // Auto-dismiss client-side errors after 5 seconds
+            setTimeout(() => {
+                hideError(field, error);
+            }, 5000);
+        }
+
+        // Helper: hide error
+        function hideError(field, error) {
+            field.classList.remove("input-error");
+            error.classList.remove("error-visible");
+        }
+
+        // Validation logic
         function validateField(field, error, type) {
             const value = field.value.trim();
             let valid = true;
 
             switch (type) {
-            case "fullName":
-                valid = /^[A-Za-z\s]{3,}$/.test(value.trim());
-                break;
+                case "fullName":
+                    valid = /^[A-Za-z\s]{3,}$/.test(value);
+                    break;
                 case "email":
                     valid = /^\S+@\S+\.\S+$/.test(value);
                     break;
@@ -130,46 +177,61 @@
                     valid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(value);
                     break;
                 case "role":
-                case "department":
                     valid = value !== "";
+                    break;
+                case "department":
+                    valid = field.disabled || value !== "";
                     break;
             }
 
             if (!valid) {
-                field.classList.add("input-error");
-                error.classList.add("error-visible");
-            } else {
-                field.classList.remove("input-error");
-                error.classList.remove("error-visible");
+                showError(field, error);
             }
 
             return valid;
         }
+        
+        Object.keys(inputs).forEach(key => {
+            inputs[key].addEventListener('input', () => {
+                hideError(inputs[key], errors[key]);
+            });
+        });
+        
+        const roleSelect = inputs.role;
+        const departmentSelect = inputs.department;
 
-        // Trigger validation on blur
-     Object.keys(inputs).forEach(key => {
-    // Validate on blur
-    inputs[key].addEventListener('blur', () => {
-        validateField(inputs[key], errors[key], key);
-    });
+        // Watch for changes in the role dropdown
+        roleSelect.addEventListener('change', () => {
+            if (roleSelect.value === 'cod') {
+                departmentSelect.disabled = false;
+                departmentSelect.required = true;
+            } else {
+                departmentSelect.disabled = true;
+                departmentSelect.required = false;
+                departmentSelect.value = ''; 
+                hideError(departmentSelect, errors.department);
+            }
+        });
 
-    // Live validation while typing
-    inputs[key].addEventListener('input', () => {
-        validateField(inputs[key], errors[key], key);
-    });
-});
-
-
+        // Validate on submit only
         form.addEventListener('submit', function (e) {
             let valid = true;
             Object.keys(inputs).forEach(key => {
+                if (key === 'department' && inputs.role.value !== 'cod') {
+                    // Skip department validation if not COD
+                    return;
+                }
+                
                 const isValid = validateField(inputs[key], errors[key], key);
-                if (!isValid) valid = false;
+                if (!isValid) {
+                    valid = false;
+                }
             });
 
-            if (!valid) e.preventDefault(); // prevent form submission
+            if (!valid) e.preventDefault(); // stop form submission if invalid
         });
     });
 </script>
+
 </body>
 </html>
